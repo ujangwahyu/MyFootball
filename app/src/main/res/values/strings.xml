@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">MyFootball</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_search">Search..</string>
+    <string name="something_wrong">Oops.. something went wrong</string>
+    <string name="title_header_nomor">No</string>
+    <string name="title_header_team">Team</string>
+    <string name="title_header_played">P</string>
+    <string name="title_header_win">W</string>
+    <string name="title_header_draw">D</string>
+    <string name="title_header_lose">L</string>
+    <string name="title_header_pts">Pts</string>
+    <string name="title_livescores">Livescores</string>
+    <string name="title_topcores">Top Scores</string>
+    <string name="title_prediction">Predictions</string>
+    <string name="title_statistic">Statistics</string>
+    <string name="title_today_match">Today Match All League</string>
+    <string name="title_last_match">Last Match All League</string>
+    <string name="title_upcoming_match">Upcoming Match</string>
+    <string name="title_team">Team</string>
+    <string name="title_shee_all">See All</string>
+    <string name="title_topscores">topscores</string>
+    <string name="title_statistics">statistics</string>
+    <string name="title_match">match</string>
+    <string name="title_detailmatch">detailmatch</string>
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/size_42"
+    android:layout_marginBottom="@dimen/margin_8"
+    android:layout_marginStart="@dimen/margin_16"
+    android:layout_marginTop="@dimen/margin_8"
+    app:cardCornerRadius="@dimen/radius_10"
+    app:cardElevation="@dimen/elevation_5">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin" >
+
+        <ImageView
+            android:id="@+id/imgTeam"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+        <TextView
+            android:id="@+id/tvTeamName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="MCU"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
