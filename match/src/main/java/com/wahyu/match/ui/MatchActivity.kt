@@ -4,13 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.wahyu.core.data.source.Resource
+import com.wahyu.core.data.source.Result
 import com.wahyu.core.data.source.remote.response.match.Match
-import com.wahyu.core.data.source.remote.response.upcoming.UpcomingMatch
-import com.wahyu.match.R
 import com.wahyu.match.databinding.ActivityMatchBinding
 import com.wahyu.match.di.MatchModule
-import com.wahyu.myfootball.ui.standing.StandingAdapter
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
 
@@ -31,9 +28,9 @@ class MatchActivity : AppCompatActivity() {
     private fun getMatchByLeague(id: Int, date: String){
         viewModel.getMatchByLeague(id, date).observeForever {
             when (it) {
-                is Resource.Loading -> setupLoading(true)
-                is Resource.Success -> successGetMatch(it)
-                is Resource.Error -> errorGetMatch(it)
+                is Result.Loading -> setupLoading(true)
+                is Result.Success -> successGetMatch(it)
+                is Result.Error -> errorGetMatch(it)
 
                 else -> setupLoading(false)
             }
@@ -49,7 +46,7 @@ class MatchActivity : AppCompatActivity() {
         }
     }
 
-    private fun successGetMatch(response: Resource<out List<Match>>) {
+    private fun successGetMatch(response: Result<out List<Match>>) {
         matchAdapter.setData(response.data)
         setupLoading(false)
     }
@@ -62,7 +59,7 @@ class MatchActivity : AppCompatActivity() {
         }
     }
 
-    private fun errorGetMatch(response: Resource<out List<Match>>) {
+    private fun errorGetMatch(response: Result<out List<Match>>) {
         setupError(response.message.toString())
         setupLoading(false)
     }

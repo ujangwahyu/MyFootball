@@ -8,26 +8,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.michalsvec.singlerowcalendar.calendar.CalendarChangesObserver
 import com.michalsvec.singlerowcalendar.calendar.CalendarViewManager
 import com.michalsvec.singlerowcalendar.calendar.SingleRowCalendarAdapter
 import com.michalsvec.singlerowcalendar.selection.CalendarSelectionManager
 import com.michalsvec.singlerowcalendar.utils.DateUtils
-import com.wahyu.core.data.source.Resource
+import com.wahyu.core.data.source.Result
+import com.wahyu.core.data.source.remote.response.leagues.League
 import com.wahyu.core.data.source.remote.response.match.Match
-import com.wahyu.core.data.source.remote.response.team.Team
-import com.wahyu.core.data.source.remote.response.todaymatch.TodayMatch
-import com.wahyu.core.data.source.remote.response.upcoming.UpcomingMatch
 import com.wahyu.myfootball.R
 import com.wahyu.myfootball.databinding.HomeFragmentBinding
-import com.wahyu.myfootball.ui.home.adapter.LastMatchAdapter
-import com.wahyu.myfootball.ui.home.adapter.TeamAdapter
-import com.wahyu.myfootball.ui.home.adapter.TodayMatchAdapter
-import com.wahyu.myfootball.ui.home.adapter.UpcomingMatchAdapter
+import com.wahyu.myfootball.ui.home.adapter.MatchAdapter
+import com.wahyu.myfootball.ui.home.adapter.LeagueAdapter
 import com.wahyu.myfootball.utils.sheetBehavior
 import kotlinx.android.synthetic.main.calendar_item.view.*
 import kotlinx.android.synthetic.main.home_fragment.*
@@ -40,7 +34,8 @@ class HomeFragment : Fragment() {
     private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var behavior: BottomSheetBehavior<*>
-    private val teamAdapter = TeamAdapter()
+    private val leagueAdapter = LeagueAdapter()
+    private val matchAdapter = MatchAdapter()
 
     private val calendar = Calendar.getInstance()
     private var currentMonth = 0
@@ -55,40 +50,68 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getData()
         setupBottomsheet()
-        setupViewModel()
         setupComponent()
         setupCalendar()
     }
 
-    private fun setupViewModel(){
-//        homeViewModel.team.observe(viewLifecycleOwner) {
-//            when(it) {
-//                is Resource.Loading -> setupLoading(true)
-//                is Resource.Success -> successGetTeam(it)
-//                is Resource.Error -> errorGetTeam(it)
-//                else -> setupLoading(false)
-//            }
-//        }
-//        setupAdapterTeam()
+    private fun getData(){
+        homeViewModel.getLeague("england", "2018").observeForever {
+            when (it) {
+                is Result.Loading -> setupLoading(true)
+                is Result.Success -> successGetLeague(it)
+                is Result.Error -> errorGetLeague(it)
+
+                else -> setupLoading(false)
+            }
+            setupAdapterLeague()
+        }
+
+        homeViewModel.getMatchByLeague(2, "").observeForever {
+            when (it) {
+                is Result.Loading -> setupLoading(true)
+                is Result.Success -> successGetMatch(it)
+                is Result.Error -> errorGetMatch(it)
+
+                else -> setupLoading(false)
+            }
+            setupAdapterMatch()
+        }
 
     }
 
-//    private fun setupAdapterTeam() {
-//        with(binding.rvTeam) {
-//            layoutManager = StaggeredGridLayoutManager(2,
-//                    StaggeredGridLayoutManager.HORIZONTAL)
-//            adapter = teamAdapter
-//            setHasFixedSize(true)
-//        }
-//    }
+    private fun setupAdapterLeague() {
+        with(binding.rvLeague) {
+            layoutManager = LinearLayoutManager(context,
+                LinearLayoutManager.HORIZONTAL , false)
+            adapter = leagueAdapter
+        }
+    }
 
-    private fun successGetTeam(response: Resource<out List<Team>>) {
-        teamAdapter.setData(response.data)
+    private fun setupAdapterMatch() {
+        with(binding.rvMatch) {
+            layoutManager = LinearLayoutManager(context)
+            adapter = matchAdapter
+        }
+    }
+
+    private fun successGetLeague(response: Result<out List<League>>) {
+        leagueAdapter.setData(response.data)
         setupLoading(false)
     }
 
-    private fun errorGetTeam(response: Resource<out List<Team>>) {
+    private fun successGetMatch(response: Result<out List<Match>>) {
+        matchAdapter.setData(response.data)
+        setupLoading(false)
+    }
+
+    private fun errorGetLeague(response: Result<out List<League>>) {
+        setupError(response.message.toString())
+        setupLoading(false)
+    }
+
+    private fun errorGetMatch(response: Result<out List<Match>>) {
         setupError(response.message.toString())
         setupLoading(false)
     }
@@ -102,11 +125,15 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupError(response: String){
-
+        binding.tvError.visibility = View.GONE
+        binding.tvError.text = response
     }
 
     private fun setupComponent() {
-
+        binding.imgFavorite.setOnClickListener {
+            val uri = Uri.parse("myfootball://match")
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        }
     }
 
     private fun setupBottomsheet(){
@@ -119,7 +146,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupCalendar() {
-// set current date to calendar and current month to currentMonth variable
+    // set current date to calendar and current month to currentMonth variable
         calendar.time = Date()
         currentMonth = calendar[Calendar.MONTH]
 

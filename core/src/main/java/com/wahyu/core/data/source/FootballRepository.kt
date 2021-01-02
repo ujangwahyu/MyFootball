@@ -2,6 +2,7 @@ package com.wahyu.core.data.source
 
 import com.wahyu.core.data.source.local.LocalDataSource
 import com.wahyu.core.data.source.remote.RemoteDataSource
+import com.wahyu.core.data.source.remote.response.leagues.League
 import com.wahyu.core.data.source.remote.response.match.Match
 import com.wahyu.core.data.source.remote.response.standing.Standing
 import com.wahyu.core.data.source.remote.response.team.Team
@@ -18,31 +19,19 @@ class FootballRepository (
     private val appExecutors: AppExecutors
 
 ): IFootballRepository {
-    override fun getStanding(id: Int): Flow<Resource<out List<List<Standing>>>> {
+    override fun getStanding(id: Int): Flow<Result<out List<List<Standing>>>> {
         return remoteDataSource.getStanding(id)
     }
 
-    override fun getTeam(id: Int): Flow<Resource<out List<Team>>> {
+    override fun getTeam(id: Int): Flow<Result<out List<Team>>> {
         return remoteDataSource.getTeam(id)
     }
 
-    override fun getLastMatch(id: Int): Flow<Resource<out List<Match>>> {
-        return remoteDataSource.getLastMatch(id)
+    override fun getLeagueByCountry(country: String, season: String): Flow<Result<out List<League>>> {
+        return remoteDataSource.getLeagueByCountry(country, season)
     }
 
-    override fun getUpcomingMatch(id: Int): Flow<Resource<out List<UpcomingMatch>>> {
-        return remoteDataSource.getUpcoming(id)
-    }
-
-    override fun getTopScores(id: Int): Flow<Resource<out List<Topscorer>>> {
-        return remoteDataSource.getTopscore(id)
-    }
-
-    override fun getTodayMatch(date: String): Flow<Resource<out List<TodayMatch>>> {
-        return remoteDataSource.getTodayMatch(date)
-    }
-
-    override fun getMatchByLeague(idLeague: Int, date: String): Flow<Resource<out List<Match>>> {
+    override fun getMatchByLeague(idLeague: Int, date: String): Flow<Result<out List<Match>>> {
         return remoteDataSource.getMatchByLeague(idLeague, date)
     }
 }

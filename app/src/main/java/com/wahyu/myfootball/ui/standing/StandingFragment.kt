@@ -1,6 +1,5 @@
 package com.wahyu.myfootball.ui.standing
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.fragment.app.Fragment
@@ -10,9 +9,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.wahyu.core.data.source.Resource
+import com.wahyu.core.data.source.Result
 import com.wahyu.myfootball.R
-import com.wahyu.myfootball.databinding.HomeFragmentBinding
 import com.wahyu.myfootball.databinding.StandingFragmentBinding
 import com.wahyu.myfootball.utils.sheetBehavior
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -41,15 +39,15 @@ class StandingFragment : Fragment() {
 
             standingViewModel.standing.observe(viewLifecycleOwner) { standing ->
                 when(standing) {
-                    is Resource.Loading -> binding.lottieLoading.visibility = View.VISIBLE
-                    is Resource.Success -> {
+                    is Result.Loading -> binding.lottieLoading.visibility = View.VISIBLE
+                    is Result.Success -> {
                         binding.lottieLoading.visibility = View.GONE
                         standingAdapter.setData(standing.data!![0])
                     }
-                    is Resource.Error -> {
+                    is Result.Error -> {
                         binding.lottieLoading.visibility = View.GONE
-                        binding.viewError.root.visibility = View.VISIBLE
-                        binding.viewError.tvError.text = standing.message ?: getString(R.string.something_wrong)
+                        binding.tvError.visibility = View.VISIBLE
+                        binding.tvError.text = standing.message ?: getString(R.string.something_wrong)
                     }
                 }
             }

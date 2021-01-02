@@ -1,6 +1,7 @@
 package com.wahyu.core.di
 
 import androidx.room.Room
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.wahyu.core.data.source.FootballRepository
 import com.wahyu.core.data.source.local.LocalDataSource
 import com.wahyu.core.data.source.local.database.FootballDatabase
@@ -32,6 +33,7 @@ object CoreModule {
         single {
             OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(ChuckerInterceptor(androidContext()))
                 .connectTimeout(120, TimeUnit.SECONDS)
                 .readTimeout(120, TimeUnit.SECONDS)
                 .build()

@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wahyu.core.data.source.remote.response.match.Match
 import com.wahyu.myfootball.R
-import com.wahyu.myfootball.databinding.ItemLastMatchBinding
+import com.wahyu.myfootball.databinding.ItemMatchBinding
 import java.util.ArrayList
 
-class LastMatchAdapter : RecyclerView.Adapter<LastMatchAdapter.ListViewHolder>() {
+class MatchAdapter : RecyclerView.Adapter<MatchAdapter.ListViewHolder>() {
 
     private var data = ArrayList<Match>()
     var onItemClick: ((Match) -> Unit)? = null
@@ -24,7 +24,7 @@ class LastMatchAdapter : RecyclerView.Adapter<LastMatchAdapter.ListViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ListViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_last_match, parent, false)
+                    .inflate(R.layout.item_match, parent, false)
             )
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
@@ -35,7 +35,7 @@ class LastMatchAdapter : RecyclerView.Adapter<LastMatchAdapter.ListViewHolder>()
     override fun getItemCount() = data.size
 
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val binding = ItemLastMatchBinding.bind(itemView)
+        private val binding = ItemMatchBinding.bind(itemView)
         fun bind(data: Match) {
             with(binding) {
                 Glide.with(itemView.context).load(data.homeTeam.logo).into(imgTeamHome)

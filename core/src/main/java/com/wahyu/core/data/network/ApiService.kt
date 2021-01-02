@@ -49,14 +49,14 @@ interface ApiService {
         @Path("date") date: String
     ): TodayMatchResponse
 
-    @GET("v2/leagues/country/{country_name)/{season}")
+    @GET("v2/leagues/country/{country_name}/{season}")
     suspend fun getLeagueByCountry(
         @Header("x-rapidapi-key") apiKey: String,
         @Path("country_name") countryName: String,
         @Path("season") season: String
     ): LeagueResponse
 
-    @GET("v2/fixtures/league/{league_id}/{date}")
+    @GET("v2/fixtures/league/{league_id}/{date}/last/50")
     suspend fun getMatchByLeague(
         @Header("x-rapidapi-key") apiKey: String,
         @Path("league_id") leagueId: Int,
