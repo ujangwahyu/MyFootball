@@ -10,7 +10,6 @@
     android:layout_marginBottom="@dimen/margin_8"
     android:layout_marginTop="@dimen/margin_8"
     app:cardCornerRadius="@dimen/size_10"
-    app:cardElevation="@dimen/elevation_5"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 

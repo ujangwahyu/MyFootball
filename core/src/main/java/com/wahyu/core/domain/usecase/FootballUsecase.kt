@@ -8,11 +8,11 @@ import com.wahyu.core.data.source.remote.response.team.Team
 import kotlinx.coroutines.flow.Flow
 
 interface FootballUsecase {
-    fun getStanding(id: Int): Flow<Result<out List<List<Standing>>>>
+    fun getStanding(id: Int): Flow<Result<List<List<Standing>>>>
 
-    fun getTeam(id: Int): Flow<Result<out List<Team>>>
+    fun getTeam(id: Int): Flow<Result<List<Team>>>
 
-    fun getLeagueByCountry(country: String, season: String): Flow<Result<out List<League>>>
+    fun getLeagueByCountry(country: String, season: String): Flow<Result<List<League>>>
 
-    fun getMatchByLeague(leagueId: Int, date: String): Flow<Result<out List<Match>>>
+    fun getMatchByLeague(leagueId: Int, date: String): Flow<Result<List<Match>>>
 }

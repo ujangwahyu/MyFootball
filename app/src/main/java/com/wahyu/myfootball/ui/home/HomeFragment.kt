@@ -37,10 +37,6 @@ class HomeFragment : Fragment() {
     private val leagueAdapter = LeagueAdapter()
     private val matchAdapter = MatchAdapter()
 
-    private val calendar = Calendar.getInstance()
-    private var currentMonth = 0
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -50,14 +46,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getData()
+        getDataLeague("england", "2020")
+        getDataMatch(2)
         setupBottomsheet()
         setupComponent()
-        setupCalendar()
     }
 
-    private fun getData(){
-        homeViewModel.getLeague("england", "2018").observeForever {
+    private fun getDataLeague(country: String, season: String){
+        homeViewModel.getLeague(country, season).observeForever {
             when (it) {
                 is Result.Loading -> setupLoading(true)
                 is Result.Success -> successGetLeague(it)
@@ -67,8 +63,10 @@ class HomeFragment : Fragment() {
             }
             setupAdapterLeague()
         }
+    }
 
-        homeViewModel.getMatchByLeague(2, "").observeForever {
+    private fun getDataMatch(id: Int) {
+        homeViewModel.getMatchByLeague(id, "").observeForever {
             when (it) {
                 is Result.Loading -> setupLoading(true)
                 is Result.Success -> successGetMatch(it)
@@ -78,7 +76,6 @@ class HomeFragment : Fragment() {
             }
             setupAdapterMatch()
         }
-
     }
 
     private fun setupAdapterLeague() {
@@ -96,22 +93,22 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun successGetLeague(response: Result<out List<League>>) {
+    private fun successGetLeague(response: Result<List<League>>) {
         leagueAdapter.setData(response.data)
         setupLoading(false)
     }
 
-    private fun successGetMatch(response: Result<out List<Match>>) {
+    private fun successGetMatch(response: Result<List<Match>>) {
         matchAdapter.setData(response.data)
         setupLoading(false)
     }
 
-    private fun errorGetLeague(response: Result<out List<League>>) {
+    private fun errorGetLeague(response: Result<List<League>>) {
         setupError(response.message.toString())
         setupLoading(false)
     }
 
-    private fun errorGetMatch(response: Result<out List<Match>>) {
+    private fun errorGetMatch(response: Result<List<Match>>) {
         setupError(response.message.toString())
         setupLoading(false)
     }
@@ -143,131 +140,6 @@ class HomeFragment : Fragment() {
         val height = displayMetrics.heightPixels
         behavior.peekHeight = height/2
         behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
-    private fun setupCalendar() {
-    // set current date to calendar and current month to currentMonth variable
-        calendar.time = Date()
-        currentMonth = calendar[Calendar.MONTH]
-
-        // calendar view manager is responsible for our displaying logic
-        val myCalendarViewManager = object :
-                CalendarViewManager {
-            override fun setCalendarViewResourceId(
-                    position: Int,
-                    date: Date,
-                    isSelected: Boolean
-            ): Int {
-                // set date to calendar according to position where we are
-                val cal = Calendar.getInstance()
-                cal.time = date
-                // if item is selected we return this layout items
-                // in this example. monday, wednesday and friday will have special item views and other days
-                // will be using basic item view
-                return if (isSelected)
-                    R.layout.selected_calendar_item
-                else
-                    R.layout.first_special_calendar_item
-            }
-
-            override fun bindDataToCalendarView(
-                    holder: SingleRowCalendarAdapter.CalendarViewHolder,
-                    date: Date,
-                    position: Int,
-                    isSelected: Boolean
-            ) {
-                // using this method we can bind data to calendar view
-                // good practice is if all views in layout have same IDs in all item views
-                holder.itemView.tv_date_calendar_item.text = DateUtils.getDayNumber(date)
-                holder.itemView.tv_day_calendar_item.text = DateUtils.getDay3LettersName(date)
-
-            }
-        }
-
-        // using calendar changes observer we can track changes in calendar
-        val myCalendarChangesObserver = object :
-                CalendarChangesObserver {
-            // you can override more methods, in this example we need only this one
-            override fun whenSelectionChanged(isSelected: Boolean, position: Int, date: Date) {
-                binding.tvDate.text = "${DateUtils.getMonthName(date)}, ${DateUtils.getDayNumber(date)} "
-                binding.tvDay.text = DateUtils.getDayName(date)
-                super.whenSelectionChanged(isSelected, position, date)
-            }
-        }
-
-        // selection manager is responsible for managing selection
-        val mySelectionManager = object : CalendarSelectionManager {
-            override fun canBeItemSelected(position: Int, date: Date): Boolean {
-                // set date to calendar according to position
-                val cal = Calendar.getInstance()
-                cal.time = date
-                // in this example sunday and saturday can't be selected, others can
-                return when (cal[Calendar.DAY_OF_WEEK]) {
-                    Calendar.SATURDAY -> true
-                    Calendar.SUNDAY -> true
-                    else -> true
-                }
-            }
-        }
-
-        // here we init our calendar, also you can set more properties if you haven't specified in XML layout
-        val singleRowCalendar = singleCalendar.apply {
-            calendarViewManager = myCalendarViewManager
-            calendarChangesObserver = myCalendarChangesObserver
-            calendarSelectionManager = mySelectionManager
-            includeCurrentDate = true
-            setDates(getFutureDatesOfCurrentMonth())
-            init()
-        }
-
-        binding.btnRight.setOnClickListener {
-            singleRowCalendar.setDates(getDatesOfNextMonth())
-        }
-
-        binding.btnLeft.setOnClickListener {
-            singleRowCalendar.setDates(getDatesOfPreviousMonth())
-        }
-    }
-
-    private fun getDatesOfNextMonth(): List<Date> {
-        currentMonth++ // + because we want next month
-        if (currentMonth == 12) {
-            // we will switch to january of next year, when we reach last month of year
-            calendar.set(Calendar.YEAR, calendar[Calendar.YEAR] + 1)
-            currentMonth = 0 // 0 == january
-        }
-        return getDates(mutableListOf())
-    }
-
-    private fun getDatesOfPreviousMonth(): List<Date> {
-        currentMonth-- // - because we want previous month
-        if (currentMonth == -1) {
-            // we will switch to december of previous year, when we reach first month of year
-            calendar.set(Calendar.YEAR, calendar[Calendar.YEAR] - 1)
-            currentMonth = 11 // 11 == december
-        }
-        return getDates(mutableListOf())
-    }
-
-    private fun getFutureDatesOfCurrentMonth(): List<Date> {
-        // get all next dates of current month
-        currentMonth = calendar[Calendar.MONTH]
-        return getDates(mutableListOf())
-    }
-
-
-    private fun getDates(list: MutableList<Date>): List<Date> {
-        // load dates of whole month
-        calendar.set(Calendar.MONTH, currentMonth)
-        calendar.set(Calendar.DAY_OF_MONTH, 1)
-        list.add(calendar.time)
-        while (currentMonth == calendar[Calendar.MONTH]) {
-            calendar.add(Calendar.DATE, +1)
-            if (calendar[Calendar.MONTH] == currentMonth)
-                list.add(calendar.time)
-        }
-        calendar.add(Calendar.DATE, -1)
-        return list
     }
 
     override fun onDestroyView() {

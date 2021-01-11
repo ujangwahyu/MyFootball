@@ -19,19 +19,19 @@ class FootballRepository (
     private val appExecutors: AppExecutors
 
 ): IFootballRepository {
-    override fun getStanding(id: Int): Flow<Result<out List<List<Standing>>>> {
+    override fun getStanding(id: Int): Flow<Result<List<List<Standing>>>> {
         return remoteDataSource.getStanding(id)
     }
 
-    override fun getTeam(id: Int): Flow<Result<out List<Team>>> {
+    override fun getTeam(id: Int): Flow<Result<List<Team>>> {
         return remoteDataSource.getTeam(id)
     }
 
-    override fun getLeagueByCountry(country: String, season: String): Flow<Result<out List<League>>> {
+    override fun getLeagueByCountry(country: String, season: String): Flow<Result<List<League>>> {
         return remoteDataSource.getLeagueByCountry(country, season)
     }
 
-    override fun getMatchByLeague(idLeague: Int, date: String): Flow<Result<out List<Match>>> {
+    override fun getMatchByLeague(idLeague: Int, date: String): Flow<Result<List<Match>>> {
         return remoteDataSource.getMatchByLeague(idLeague, date)
     }
 }

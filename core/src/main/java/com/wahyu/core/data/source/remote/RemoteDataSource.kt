@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.flowOn
 
 class RemoteDataSource (private val apiService: ApiService) {
 
-    fun getStanding(id: Int): Flow<Result<out List<List<Standing>>>> {
+    fun getStanding(id: Int): Flow<Result<List<List<Standing>>>> {
         return flow {
             try {
                 val response = apiService.getStanding(API_KEY, id)
@@ -35,7 +35,7 @@ class RemoteDataSource (private val apiService: ApiService) {
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getTeam(id: Int): Flow<Result<out List<Team>>> {
+    fun getTeam(id: Int): Flow<Result<List<Team>>> {
         return flow {
             try {
                 val response = apiService.getTeam(API_KEY,id)
@@ -52,7 +52,7 @@ class RemoteDataSource (private val apiService: ApiService) {
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getTopscore(id: Int): Flow<Result<out List<Topscorer>>> {
+    fun getTopscore(id: Int): Flow<Result<List<Topscorer>>> {
         return flow {
             try {
                 val response = apiService.getTopScorer(API_KEY, id)

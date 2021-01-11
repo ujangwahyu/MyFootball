@@ -10,11 +10,11 @@ import com.wahyu.core.domain.usecase.FootballUsecase
 
 class HomeViewModel (val footballUsecase: FootballUsecase) : ViewModel() {
 
-    fun getLeague(country: String, season: String) : LiveData<Result<out List<League>>> {
+    fun getLeague(country: String, season: String) : LiveData<Result<List<League>>> {
         return footballUsecase.getLeagueByCountry(country, season).asLiveData()
     }
 
-    fun getMatchByLeague(id: Int, date: String): LiveData<Result<out List<Match>>> {
+    fun getMatchByLeague(id: Int, date: String): LiveData<Result<List<Match>>> {
         return footballUsecase.getMatchByLeague(id, date).asLiveData()
     }
 }
